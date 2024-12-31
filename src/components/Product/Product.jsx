@@ -5,7 +5,8 @@ const Product = ({ product }) => {
     const navigate = useNavigate();
 
     const handleCardClick = () => {
-        navigate(`/productDetails`);
+        window.open(`/product/${product._id}`, '_blank');
+        // navigate(`/product/${product._id}`);
     };
 
     const handleAddToCart = (event) => {

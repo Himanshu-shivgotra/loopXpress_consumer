@@ -1,8 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaShoppingCart, FaUserCircle } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
 
 const Navbar = () => {
+    const totalItems = useSelector((state) =>
+        state.cart.items.reduce((total, item) => total + item.cartQuantity, 0)
+    );
+
     return (
         <nav className="bg-gray-800 p-4">
             <div className="container mx-auto flex flex-wrap items-center justify-between">
@@ -62,9 +67,14 @@ const Navbar = () => {
                     </div>
 
                     {/* User and Cart Icons */}
-                    <div className="flex space-x-4 text-white text-2xl">
-                        <Link to="/cart" className="hover:text-gray-300">
+                    <div className="flex space-x-4 text-white text-2xl relative">
+                        <Link to="/cart" className="hover:text-gray-300 relative">
                             <FaShoppingCart />
+                            {totalItems > 0 && (
+                                <span className="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center transform translate-x-2 -translate-y-2">
+                                    {totalItems}
+                                </span>
+                            )}
                         </Link>
                         <Link to="/profile" className="hover:text-gray-300">
                             <FaUserCircle />

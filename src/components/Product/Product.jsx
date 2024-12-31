@@ -1,8 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { addItem } from '../../../redux/slices/cart/cartSlice';
 
 const Product = ({ product }) => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleCardClick = () => {
         window.open(`/product/${product._id}`, '_blank');
@@ -11,8 +14,10 @@ const Product = ({ product }) => {
 
     const handleAddToCart = (event) => {
         event.stopPropagation();
-        console.log(`Added ${product.title} to cart`);
+        dispatch(addItem({ ...product })); // Pass the full product object
+        console.log(product)
     };
+
 
     return (
         <div

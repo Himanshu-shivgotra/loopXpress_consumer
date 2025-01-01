@@ -14,7 +14,7 @@ const Cart = () => {
 
     return (
         <div className="bg-gray-50 min-h-screen p-4 sm:p-6">
-            <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-4">Shopping Cart</h1>
+            <h1 className="text-3xl sm:text-4xl text-center font-bold text-gray-800 mb-4">Shopping Cart</h1>
             <p className="text-base sm:text-lg text-gray-600 mb-6">
                 You have <span className="font-semibold text-blue-500">{calculateTotalItems()}</span> items in your cart.
             </p>

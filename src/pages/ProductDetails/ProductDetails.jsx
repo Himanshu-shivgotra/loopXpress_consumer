@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '../../common/axiosInstance';
 import { useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { addItem } from '../../../redux/slices/cart/cartSlice';
 
-const ProductDetails = () => {
+const ProductDetails = (product) => {
+    const dispatch = useDispatch();
+
     const { id } = useParams();
     const [productDetail, setProductDetail] = useState(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -36,6 +40,12 @@ const ProductDetails = () => {
 
     const selectImage = (index) => {
         setCurrentImageIndex(index);
+    };
+
+    const handleAddToCart = (event) => {
+        event.stopPropagation();
+        dispatch(addItem({ ...product }));
+        console.log(product)
     };
 
     return (
@@ -163,7 +173,7 @@ const ProductDetails = () => {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex gap-4">
+                    <div onClick={handleAddToCart} className="flex gap-4">
                         <button className="flex-1 bg-orange-500 text-white py-3 px-6 rounded-lg hover:bg-orange-600 transition-colors">
                             Add to Cart
                         </button>

@@ -44,8 +44,7 @@ const ProductDetails = (product) => {
 
     const handleAddToCart = (event) => {
         event.stopPropagation();
-        dispatch(addItem({ ...product }));
-        console.log(product)
+        dispatch(addItem({ ...productDetail }));
     };
 
     return (
@@ -173,8 +172,8 @@ const ProductDetails = (product) => {
                     </div>
 
                     {/* Action Buttons */}
-                    <div onClick={handleAddToCart} className="flex gap-4">
-                        <button className="flex-1 bg-orange-500 text-white py-3 px-6 rounded-lg hover:bg-orange-600 transition-colors">
+                    <div className="flex gap-4">
+                        <button onClick={handleAddToCart} className="flex-1 bg-orange-500 text-white py-3 px-6 rounded-lg hover:bg-orange-600 transition-colors">
                             Add to Cart
                         </button>
                         <button className="flex-1 bg-gray-800 text-white py-3 px-6 rounded-lg hover:bg-gray-900 transition-colors">

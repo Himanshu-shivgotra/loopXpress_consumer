@@ -34,18 +34,18 @@ const cartSlice = createSlice({
             } else {
                 state.items.push({ ...action.payload, id: action.payload._id, cartQuantity: 1 });
             }
-            saveState(state); // Persist state
+            saveState(state);
         },
         removeItem: (state, action) => {
             state.items = state.items.filter(item => item.id !== action.payload.id);
-            saveState(state); // Persist state
+            saveState(state);
         },
         updateQuantity: (state, action) => {
             const item = state.items.find(item => item.id === action.payload.id);
             if (item && action.payload.cartQuantity > 0) {
                 item.cartQuantity = action.payload.cartQuantity;
             }
-            saveState(state); // Persist state
+            saveState(state);
         },
     },
 });

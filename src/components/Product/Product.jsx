@@ -1,10 +1,10 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { addItem } from '../../../redux/slices/cart/cartSlice';
+import { toast } from 'react-toastify';
 
 const Product = ({ product }) => {
-    const navigate = useNavigate();
+
     const dispatch = useDispatch();
 
     const handleCardClick = () => {
@@ -15,7 +15,16 @@ const Product = ({ product }) => {
     const handleAddToCart = (event) => {
         event.stopPropagation();
         dispatch(addItem({ ...product })); // Pass the full product object
-        console.log(product)
+        toast.success(`${product.title} added to cart!`, {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+        });
     };
 
 

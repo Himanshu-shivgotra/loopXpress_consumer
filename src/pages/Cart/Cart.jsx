@@ -1,8 +1,11 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { removeItem, updateQuantity } from "../../../redux/slices/cart/cartSlice";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
+    const navigate = useNavigate()
+
     const cartItems = useSelector((state) => state.cart.items);
     const dispatch = useDispatch();
 
@@ -11,6 +14,10 @@ const Cart = () => {
 
     const calculateTotalItems = () =>
         cartItems.reduce((total, item) => total + item.cartQuantity, 0);
+
+    const handleCheckOut = (e) => {
+        navigate('/checkout')
+    }
 
     return (
         <div className="bg-gray-50 min-h-screen p-4 sm:p-6">
@@ -109,7 +116,7 @@ const Cart = () => {
                             <p className="text-lg sm:text-xl font-semibold text-gray-800">Total</p>
                             <p className="text-lg sm:text-xl font-bold text-blue-600">₹{calculateSubtotal()}</p>
                         </div>
-                        <button className="w-full mt-6 py-2 sm:py-3 bg-blue-500 text-white rounded-lg text-sm sm:text-lg font-medium hover:bg-blue-600 transition">
+                        <button onClick={handleCheckOut} className="w-full mt-6 py-2 sm:py-3 bg-blue-500 text-white rounded-lg text-sm sm:text-lg font-medium hover:bg-blue-600 transition">
                             Proceed to Checkout
                         </button>
                     </div>

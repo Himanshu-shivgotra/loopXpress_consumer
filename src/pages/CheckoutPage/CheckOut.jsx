@@ -98,6 +98,12 @@ const CheckOut = () => {
                         razorpay_signature: response.razorpay_signature,
                         amount: order.amount / 100,
                         currency: "INR",
+                        items: cartItems.map(item => ({
+                            title: item.title,
+                            brand: item.brand,
+                            category: item.category,
+                            subcategory: item.subcategory,
+                        }))
                     };
 
                     try {
@@ -112,7 +118,7 @@ const CheckOut = () => {
                             setPaymentSuccess(true);
                             setTimeout(() => {
                                 setPaymentSuccess(false);
-                                navigate("/product"); // Redirect to home
+                                navigate("/products");
                             }, 3000);
                         } else {
                             setPaymentFailure(true);
@@ -147,13 +153,11 @@ const CheckOut = () => {
     };
 
 
-
-
     return (
         <div className="bg-gradient-to-br from-gray-100 to-gray-200 min-h-screen p-8 ">
             {paymentSuccess && (
                 <div className="fixed top-10 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-4 rounded-md shadow-md">
-                    Payment Successful! Redirecting to home...
+                    Payment Successful! Redirecting to products...
                 </div>
             )}
             {paymentFailure && (

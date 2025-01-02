@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { indianStates } from "../../common/constants/mockData";
 import axiosInstance from "../../common/axiosInstance";
@@ -19,6 +19,8 @@ const CheckOut = () => {
     });
     const [errors, setErrors] = useState({});
     const [showSummary, setShowSummary] = useState(false);
+    const [paymentSuccess, setPaymentSuccess] = useState(false);
+    const [paymentFailure, setPaymentFailure] = useState(false);
 
     const validateField = (name, value) => {
         let error = "";
@@ -86,7 +88,7 @@ const CheckOut = () => {
                 amount: order.amount,
                 currency: "INR",
                 order_id: order.id,
-                name: "Loopxpress ",
+                name: "Loopxpress",
                 description: "Order Payment",
                 image: "https://loopxpress.vercel.app/assets/looplogo-1b30dddd.png",
                 handler: async (response) => {
@@ -94,23 +96,37 @@ const CheckOut = () => {
                         razorpay_order_id: response.razorpay_order_id,
                         razorpay_payment_id: response.razorpay_payment_id,
                         razorpay_signature: response.razorpay_signature,
+                        amount: order.amount / 100,
+                        currency: "INR",
                     };
 
-                    const paymentResponse = await axiosInstance.post(
-                        "/api/payment/paymentverification",
-                        paymentData
-                    );
+                    try {
+                        const paymentResponse = await axiosInstance.post(
+                            "/api/payment/paymentverification",
+                            paymentData
+                        );
 
-                    if (paymentResponse.data.success) {
-                        // Use navigate to go to PaymentSuccess page
-                        navigate(`/paymentsuccess?reference=${response.razorpay_payment_id}&orderId=${order.id}`);
-                    } else {
-                        console.error("Payment verification failed.");
+                        console.log("Payment verification response:", paymentResponse.data);
+
+                        if (paymentResponse.data.success) {
+                            setPaymentSuccess(true);
+                            setTimeout(() => {
+                                setPaymentSuccess(false);
+                                navigate("/product"); // Redirect to home
+                            }, 3000);
+                        } else {
+                            setPaymentFailure(true);
+                            setTimeout(() => setPaymentFailure(false), 3000);
+                        }
+                    } catch (verificationError) {
+                        console.error("Verification error:", verificationError);
+                        setPaymentFailure(true);
+                        setTimeout(() => setPaymentFailure(false), 3000);
                     }
                 },
                 prefill: {
                     name: formData.fullName,
-                    email: "himmu@example.com", // Replace with dynamic email if available
+                    email: "himmu@example.com",
                     contact: formData.mobileNumber,
                 },
                 notes: {
@@ -125,12 +141,26 @@ const CheckOut = () => {
             razorpay.open();
         } catch (error) {
             console.error("Error during checkout:", error);
+            setPaymentFailure(true);
+            setTimeout(() => setPaymentFailure(false), 3000);
         }
     };
 
 
+
+
     return (
         <div className="bg-gradient-to-br from-gray-100 to-gray-200 min-h-screen p-8 ">
+            {paymentSuccess && (
+                <div className="fixed top-10 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-4 rounded-md shadow-md">
+                    Payment Successful! Redirecting to home...
+                </div>
+            )}
+            {paymentFailure && (
+                <div className="fixed top-10 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-6 py-4 rounded-md shadow-md">
+                    Payment Failed. Please try again.
+                </div>
+            )}
             <div className="container mx-auto px-4">
                 <h1 className="text-4xl font-bold text-center text-orange-500 mb-10">Checkout</h1>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

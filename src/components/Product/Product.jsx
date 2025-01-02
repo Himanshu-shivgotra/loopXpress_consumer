@@ -17,12 +17,10 @@ const Product = ({ product }) => {
         dispatch(addItem({ ...product })); // Pass the full product object
         toast.success(`${product.title} added to cart!`, {
             position: "top-right",
-            autoClose: 3000,
+            autoClose: 2000,
             hideProgressBar: false,
             closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
+            pauseOnHover: false,
             theme: "colored",
         });
     };

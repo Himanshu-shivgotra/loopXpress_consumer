@@ -7,6 +7,7 @@ import ProductList from './pages/ProductsList/ProductList';
 import ProductDetails from './pages/ProductDetails/ProductDetails';
 import Cart from './pages/Cart/Cart'
 import CheckOut from './pages/CheckoutPage/CheckOut';
+import PaymentSuccess from './pages/paymentSuccess/PaymentSuccess';
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<CheckOut />} />
+          <Route path="/paymentsuccess" element={<PaymentSuccess />} />
           {/* <Route path="*" element={<h1>404 - Page Not Found</h1>} /> */}
         </Routes>
       </div>

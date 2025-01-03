@@ -8,6 +8,8 @@ import ProductDetails from './pages/ProductDetails/ProductDetails';
 import Cart from './pages/Cart/Cart'
 import CheckOut from './pages/CheckoutPage/CheckOut';
 import PaymentSuccess from './pages/paymentSuccess/PaymentSuccess';
+import OrderTracking from './pages/orderTracking/OrderTracking';
+import Orders from './pages/Orders/Orders';
 
 const App = () => {
   return (
@@ -24,6 +26,8 @@ const App = () => {
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<CheckOut />} />
           <Route path="/paymentsuccess" element={<PaymentSuccess />} />
+          <Route path="/orders-tracking" element={<OrderTracking />} />
+          <Route path="/orders" element={<Orders />} />
           {/* <Route path="*" element={<h1>404 - Page Not Found</h1>} /> */}
         </Routes>
       </div>

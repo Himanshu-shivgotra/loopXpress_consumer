@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FaShoppingCart, FaUserCircle } from 'react-icons/fa';
+import { FaShoppingCart, FaUserCircle, FaClipboardList } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 
 const Navbar = () => {
@@ -49,8 +49,8 @@ const Navbar = () => {
                         <Link to="/home" className="text-white hover:text-gray-300">
                             Home
                         </Link>
-                        <Link to="/about" className="text-white hover:text-gray-300">
-                            About
+                        <Link to="/orders-tracking" className="text-white hover:text-gray-300">
+                            Order Tracking
                         </Link>
                         <Link to="/products" className="text-white hover:text-gray-300">
                             Products
@@ -66,7 +66,7 @@ const Navbar = () => {
                         />
                     </div>
 
-                    {/* User and Cart Icons */}
+                    {/* User, Cart, and Orders Icons */}
                     <div className="flex space-x-4 text-white text-2xl relative">
                         <Link to="/cart" className="hover:text-gray-300 relative">
                             <FaShoppingCart />
@@ -75,6 +75,9 @@ const Navbar = () => {
                                     {totalItems}
                                 </span>
                             )}
+                        </Link>
+                        <Link to="/orders" className="hover:text-gray-300">
+                            <FaClipboardList />
                         </Link>
                         <Link to="/profile" className="hover:text-gray-300">
                             <FaUserCircle />

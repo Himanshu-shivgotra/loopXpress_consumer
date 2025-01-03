@@ -165,7 +165,7 @@ const CheckOut = () => {
                     Payment Failed. Please try again.
                 </div>
             )}
-            <div className="container mx-auto px-4">
+            <div className="container max-w-6xl mx-auto px-4">
                 <h1 className="text-4xl font-bold text-center text-orange-500 mb-10">Checkout</h1>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div className="bg-white shadow-md rounded-md p-6">
@@ -204,13 +204,15 @@ const CheckOut = () => {
                         </div>
                     </div>
 
-                    <div className="bg-white shadow-md rounded-md p-6">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-6">Shipping Details</h2>
+                    <div className="bg-white shadow-md rounded-md p-6 sm:p-8 max-w-3xl mx-auto">
+                        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 text-center">
+                            Shipping Details
+                        </h2>
                         {!showSummary ? (
                             <form className="space-y-5" onSubmit={handleSubmit}>
                                 {Object.keys(formData).map((field) => (
                                     <div key={field}>
-                                        <label className="block text-gray-700 font-medium capitalize">
+                                        <label className="block text-gray-700 font-medium capitalize mb-2">
                                             {field.replace(/([A-Z])/g, " $1").trim()}
                                         </label>
                                         {field === "state" ? (
@@ -218,7 +220,7 @@ const CheckOut = () => {
                                                 name={field}
                                                 value={formData[field]}
                                                 onChange={handleChange}
-                                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 transition"
                                             >
                                                 <option value="">Select a state</option>
                                                 {indianStates.map((state) => (
@@ -235,7 +237,7 @@ const CheckOut = () => {
                                                 name={field}
                                                 value={formData[field]}
                                                 onChange={handleChange}
-                                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 transition"
                                             />
                                         )}
                                         {errors[field] && (
@@ -245,40 +247,56 @@ const CheckOut = () => {
                                 ))}
                                 <button
                                     type="submit"
-                                    className="w-full bg-orange-500 text-white py-3 rounded-md hover:bg-orange-600 transition-colors font-medium"
+                                    className="w-full bg-orange-500 text-white py-3 rounded-md hover:bg-orange-600 transition-colors font-medium text-lg"
                                 >
                                     Proceed to Payment
                                 </button>
                             </form>
                         ) : (
-                            <div className="space-y-5">
-                                <h2 className="text-2xl font-bold text-gray-900 mb-4">Payment Summary</h2>
-                                <div>
-                                    <h3 className="font-semibold text-lg">Products:</h3>
-                                    {cartItems.map((item) => (
-                                        <div key={item._id} className="text-gray-700">
-                                            <p>{item.title} - ₹{(item.discountedPrice || item.originalPrice || 0) * item.cartQuantity}</p>
-                                        </div>
-                                    ))}
-                                    <div className="mt-4">
-                                        <h3 className="font-semibold text-lg">Total: ₹{calculateTotal()}</h3>
+                            <div className="space-y-6">
+                                {/* Product Details */}
+                                <div className="space-y-4">
+                                    <h3 className="font-semibold text-lg text-gray-800">Products:</h3>
+                                    <div className="bg-gray-50 p-4 rounded-md shadow-sm">
+                                        {cartItems.map((item) => (
+                                            <div
+                                                key={item._id}
+                                                className="flex justify-between items-center text-gray-700"
+                                            >
+                                                <span>{item.title}</span>
+                                                <span>
+                                                    ₹{(item.discountedPrice || item.originalPrice || 0) * item.cartQuantity}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="text-right font-bold text-xl text-orange-500">
+                                        <span className="text-gray-800">Total:</span> ₹{calculateTotal()}
                                     </div>
                                 </div>
-                                <div>
-                                    <h3 className="font-semibold text-lg">Delivery Address:</h3>
-                                    <p className="text-gray-700">{`${formData.fullName}, ${formData.flat}, ${formData.area}, ${formData.landmark}, ${formData.townCity}, ${formData.state} - ${formData.pincode}`}</p>
-                                    <p className="text-gray-700">{formData.mobileNumber}</p>
+
+                                {/* Address Details */}
+                                <div className="space-y-4">
+                                    <h3 className="font-semibold text-lg text-gray-800">Delivery Address:</h3>
+                                    <div className="bg-gray-50 p-4 rounded-md shadow-sm text-gray-700">
+                                        <p>{`${formData.fullName}, ${formData.flat}, ${formData.area}, ${formData.landmark}`}</p>
+                                        <p>{`${formData.townCity}, ${formData.state} - ${formData.pincode}`}</p>
+                                        <p>{formData.mobileNumber}</p>
+                                    </div>
                                 </div>
+
+                                {/* Payment Button */}
                                 <button
                                     type="button"
                                     onClick={handlePayment}
-                                    className="w-full bg-orange-500 text-white py-3 rounded-md hover:bg-orange-600 transition-colors font-medium"
+                                    className="w-full bg-orange-500 text-white py-3 rounded-md hover:bg-orange-600 transition-colors font-medium text-lg"
                                 >
                                     Proceed with Payment
                                 </button>
                             </div>
                         )}
                     </div>
+
                 </div>
             </div>
         </div>

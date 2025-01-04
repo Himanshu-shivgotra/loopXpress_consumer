@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { indianStates } from "../../common/constants/mockData";
 import axiosInstance from "../../common/axiosInstance";
 import { useNavigate } from "react-router-dom";
+import { clearCart } from "../../../redux/slices/cart/cartSlice";
 
 const CheckOut = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const cartItems = useSelector((state) => state.cart.items);
     const [formData, setFormData] = useState({
         fullName: "",
@@ -116,10 +118,11 @@ const CheckOut = () => {
 
                         if (paymentResponse.data.success) {
                             setPaymentSuccess(true);
+                            dispatch(clearCart());
                             setTimeout(() => {
                                 setPaymentSuccess(false);
                                 navigate("/products");
-                            }, 3000);
+                            }, [1000]);
                         } else {
                             setPaymentFailure(true);
                             setTimeout(() => setPaymentFailure(false), 3000);

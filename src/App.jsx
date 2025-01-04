@@ -1,7 +1,7 @@
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
 import ProductList from './pages/ProductsList/ProductList';
 import ProductDetails from './pages/ProductDetails/ProductDetails';
@@ -14,17 +14,21 @@ import CheckOut from './pages/CheckoutPage/CheckOut';
 import PaymentSuccess from './pages/paymentSuccess/PaymentSuccess';
 import OrderTracking from './pages/orderTracking/OrderTracking';
 import Orders from './pages/Orders/Orders';
+import Profile from './pages/Profile/Profile';
 
 const App = () => {
+  const location = useLocation();
+  const noNavBarRoutes = ['/auth/signup', '/auth/signin'];
+
   return (
     <>
       <div>
         <ToastContainer />
-        <Navbar />
+        {!noNavBarRoutes.includes(location.pathname) && <Navbar />}
         <Routes>
-          <Route path="/" element={<Navigate to="/auth/signin" />} />
-          <Route path="/home" element={<h1>Home Page</h1>} />
-          <Route path="/about" element={<h1>About Page</h1>} />
+          <Route path="/auth/signup" element={<SignUp />} />
+          <Route path="/auth/signin" element={<SignIn />} />
+          <Route path="/" element={<Navigate to="/products" />} />
           <Route path="/products" element={<ProductList />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/cart" element={<Cart />} />
@@ -32,10 +36,9 @@ const App = () => {
           <Route path="/paymentsuccess" element={<PaymentSuccess />} />
           <Route path="/orders-tracking" element={<OrderTracking />} />
           <Route path="/orders" element={<Orders />} />
-          <Route path="/auth/signup" element={<SignUp />} />
-          <Route path="/auth/signin" element={<SignIn />} />
           <Route path="/auth/forgot-password" element={<ForgotPassword />} />
           <Route path="/auth/reset-password/:token" element={<ResetPassword />} />
+          <Route path='/profile' element={<Profile />} />
           <Route path="*" element={<h1>404 - Page Not Found</h1>} />
         </Routes>
       </div>

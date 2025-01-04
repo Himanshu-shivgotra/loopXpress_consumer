@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axiosInstance from "../../common/axiosInstance";
+import { auth, googleProvider } from "../../firebase";
+import { signInWithPopup } from "firebase/auth";
 
 const SignIn = () => {
     const navigate = useNavigate();
@@ -52,6 +54,32 @@ const SignIn = () => {
             }
         } finally {
             setIsSubmitting(false);
+        }
+    };
+
+    const handleGoogleSignIn = async () => {
+        try {
+            const result = await signInWithPopup(auth, googleProvider);
+            const token = await result.user.getIdToken();
+            const user = result.user;
+
+            // Save token to local storage
+            localStorage.setItem("authToken", token);
+
+            // Send user data to the backend server
+            await axiosInstance.post("/api/consumers/google-login", {
+                uid: user.uid,
+                email: user.email,
+                name: user.displayName,
+                phoneNumber: user.phoneNumber,
+
+            });
+
+            // Redirect to Product List page after successful sign-in
+            navigate("/products");
+        } catch (error) {
+            console.error("Error signing in with Google:", error);
+            setErrorMessage("Something went wrong with Google Sign-In. Please try again.");
         }
     };
 
@@ -117,6 +145,16 @@ const SignIn = () => {
                                 disabled={isSubmitting} // Disable while submitting
                             >
                                 {isSubmitting ? "Signing In..." : "Sign In"}
+                            </button>
+                        </div>
+
+                        <div className="mb-5">
+                            <button
+                                type="button"
+                                onClick={handleGoogleSignIn}
+                                className="w-full cursor-pointer rounded-lg border border-gray-900 bg-red-600 p-3 sm:p-4 text-white transition hover:bg-red-500"
+                            >
+                                Sign In with Google
                             </button>
                         </div>
 

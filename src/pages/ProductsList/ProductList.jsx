@@ -27,7 +27,7 @@ const ProductList = () => {
         fetchProducts();
     }, []);
 
-    console.log("produts", products)
+    // console.log("produts", products)
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;

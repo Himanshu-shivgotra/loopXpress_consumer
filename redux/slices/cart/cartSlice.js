@@ -1,4 +1,22 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axiosInstance from '../../../src/common/axiosInstance';
+
+// Thunk to add item to the cart in the database
+export const addItemToCart = createAsyncThunk(
+    'cart/addItemToCart',
+    async (product, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.post('/api/consumers/cart', {
+                productId: product._id,
+                quantity: 1
+            });
+            return response.data;
+        } catch (err) {
+            console.error("Could not add item to the cart:", err);
+            return rejectWithValue(err.response.data);
+        }
+    }
+);
 
 // Load state from localStorage
 const loadState = () => {
@@ -11,7 +29,6 @@ const loadState = () => {
     }
 };
 
-// Save state to localStorage
 const saveState = (state) => {
     try {
         const serializedState = JSON.stringify(state);
@@ -52,6 +69,15 @@ const cartSlice = createSlice({
             saveState(state);
         },
     },
+    extraReducers: (builder) => {
+        builder
+            .addCase(addItemToCart.fulfilled, (state, action) => {
+                console.log('Item added to cart in the database:', action.payload);
+            })
+            .addCase(addItemToCart.rejected, (state, action) => {
+                console.error('Failed to add item to cart in the database:', action.payload);
+            });
+    }
 });
 
 export const { addItem, removeItem, updateQuantity, clearCart } = cartSlice.actions;

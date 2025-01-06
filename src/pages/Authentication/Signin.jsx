@@ -66,13 +66,12 @@ const SignIn = () => {
             // Save token to local storage
             localStorage.setItem("authToken", token);
 
-            // Send user data to the backend server
+            // Send user data and token to the backend server
             await axiosInstance.post("/api/consumers/google-login", {
-                uid: user.uid,
+                token,
                 email: user.email,
                 name: user.displayName,
                 phoneNumber: user.phoneNumber,
-
             });
 
             // Redirect to Product List page after successful sign-in
@@ -82,6 +81,7 @@ const SignIn = () => {
             setErrorMessage("Something went wrong with Google Sign-In. Please try again.");
         }
     };
+
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-900">

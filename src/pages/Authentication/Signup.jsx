@@ -73,10 +73,10 @@ const SignUp = () => {
                                 value={name}
                                 onChange={(e) => {
                                     setName(e.target.value);
-                                    setErrorMessage(""); // Clear error when typing
+                                    setErrorMessage("");
                                 }}
                                 className="w-full rounded-lg border border-gray-300 bg-gray-100 py-3 sm:py-4 pl-4 sm:pl-6 pr-8 sm:pr-10 text-gray-900 outline-none focus:border-gray-900 focus-visible:shadow-none"
-                                disabled={isSubmitting} // Disable while submitting
+                                disabled={isSubmitting}
                             />
                         </div>
 

@@ -13,6 +13,7 @@ const Profile = () => {
             try {
                 const response = await axiosInstance.get('/api/consumers/profile');
                 setProfile(response.data);
+                console.log(response.data)
             } catch (error) {
                 console.error('Error fetching profile:', error.response?.data || error.message);
                 if (error.response?.status === 401) {

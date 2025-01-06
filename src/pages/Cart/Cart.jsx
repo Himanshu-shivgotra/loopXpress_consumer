@@ -2,10 +2,10 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { removeItem, updateQuantity } from "../../../redux/slices/cart/cartSlice";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Cart = () => {
     const navigate = useNavigate();
-
     const cartItems = useSelector((state) => state.cart.items);
     const dispatch = useDispatch();
 
@@ -15,8 +15,26 @@ const Cart = () => {
     const calculateTotalItems = () =>
         cartItems.reduce((total, item) => total + item.cartQuantity, 0);
 
-    const handleCheckOut = (e) => {
+    const handleCheckOut = () => {
         navigate('/checkout');
+    };
+
+    const handleRemoveItem = async (id) => {
+        try {
+            await axios.delete(`/api/consumers/cart/${id}`);
+            dispatch(removeItem({ id }));
+        } catch (error) {
+            console.error("Could not remove item from cart:", error);
+        }
+    };
+
+    const handleUpdateQuantity = async (id, cartQuantity) => {
+        try {
+            await axios.post('/api/cart', { productId: id, quantity: cartQuantity });
+            dispatch(updateQuantity({ id, cartQuantity }));
+        } catch (error) {
+            console.error("Could not update quantity:", error);
+        }
     };
 
     return (
@@ -62,12 +80,7 @@ const Cart = () => {
                                             <button
                                                 aria-label="Decrease quantity"
                                                 onClick={() =>
-                                                    dispatch(
-                                                        updateQuantity({
-                                                            id: item.id,
-                                                            cartQuantity: Math.max(item.cartQuantity - 1, 1),
-                                                        })
-                                                    )
+                                                    handleUpdateQuantity(item.id, Math.max(item.cartQuantity - 1, 1))
                                                 }
                                                 className="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
                                             >
@@ -77,12 +90,7 @@ const Cart = () => {
                                             <button
                                                 aria-label="Increase quantity"
                                                 onClick={() =>
-                                                    dispatch(
-                                                        updateQuantity({
-                                                            id: item.id,
-                                                            cartQuantity: Math.min(item.cartQuantity + 1, item.stock || Infinity),
-                                                        })
-                                                    )
+                                                    handleUpdateQuantity(item.id, Math.min(item.cartQuantity + 1, item.stock || Infinity))
                                                 }
                                                 className="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
                                             >
@@ -93,7 +101,7 @@ const Cart = () => {
                                     {/* Remove Button */}
                                     <button
                                         aria-label="Remove item"
-                                        onClick={() => dispatch(removeItem({ id: item.id }))}
+                                        onClick={() => handleRemoveItem(item.id)}
                                         className="mt-4 sm:mt-0 sm:ml-4 text-red-500 hover:text-red-600 text-sm"
                                     >
                                         Remove
@@ -139,8 +147,6 @@ const Cart = () => {
                                 Proceed to Checkout
                             </button>
                         </div>
-
-
                     </div>
                 ) : (
                     <p className="text-center text-gray-600 text-base sm:text-lg mt-10">

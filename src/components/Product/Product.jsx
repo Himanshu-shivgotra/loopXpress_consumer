@@ -1,20 +1,18 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { addItem } from '../../../redux/slices/cart/cartSlice';
+import { addItemToCart } from '../../../redux/slices/cart/cartSlice';
 import { toast } from 'react-toastify';
 
 const Product = ({ product }) => {
-
     const dispatch = useDispatch();
 
     const handleCardClick = () => {
         window.open(`/product/${product._id}`, '_blank');
-        // navigate(`/product/${product._id}`);
     };
 
     const handleAddToCart = (event) => {
         event.stopPropagation();
-        dispatch(addItem({ ...product })); // Pass the full product object
+        dispatch(addItemToCart(product));
         toast.success(`${product.title} added to cart!`, {
             position: "top-right",
             autoClose: 2000,
@@ -24,7 +22,6 @@ const Product = ({ product }) => {
             theme: "colored",
         });
     };
-
 
     return (
         <div

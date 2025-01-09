@@ -29,8 +29,6 @@ axiosInstance.interceptors.response.use(
             const { status } = error.response;
             if (status === 401) {
                 console.error("Unauthorized access. Logging out...");
-                // localStorage.removeItem("authToken");
-                // window.location.href = "/auth/signin";
             }
         }
         return Promise.reject(error);

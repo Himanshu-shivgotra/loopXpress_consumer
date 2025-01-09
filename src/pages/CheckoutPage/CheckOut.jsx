@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { indianStates } from "../../common/constants/mockData";
 import axiosInstance from "../../common/axiosInstance";
 import { useNavigate } from "react-router-dom";
-import { clearCart } from "../../../redux/slices/cart/cartSlice";
+import { fetchCartItems } from "../../../redux/slices/cart/cartSlice";
 
 const CheckOut = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const cartItems = useSelector((state) => state.cart.items);
+    // const productData = useSelector((state) => state.cart.items);
+    const [productData, setProductData] = useState([]);
     const [formData, setFormData] = useState({
         fullName: "",
         mobileNumber: "",
@@ -23,6 +24,13 @@ const CheckOut = () => {
     const [showSummary, setShowSummary] = useState(false);
     const [paymentSuccess, setPaymentSuccess] = useState(false);
     const [paymentFailure, setPaymentFailure] = useState(false);
+
+
+    useEffect(() => {
+        dispatch(fetchCartItems()).then((action) => {
+            setProductData(action.payload);
+        });
+    }, [dispatch]);
 
     const validateField = (name, value) => {
         let error = "";
@@ -48,9 +56,9 @@ const CheckOut = () => {
     };
 
     const calculateTotal = () => {
-        return cartItems
+        return productData
             .reduce((total, item) => {
-                const price = item.discountedPrice || item.originalPrice || 0;
+                const price = item.price || item.productId.originalPrice || 0;
                 return total + price * (item.cartQuantity || 1);
             }, 0)
             .toFixed(2);
@@ -100,7 +108,7 @@ const CheckOut = () => {
                         razorpay_signature: response.razorpay_signature,
                         amount: order.amount / 100,
                         currency: "INR",
-                        items: cartItems.map(item => ({
+                        items: productData.map(item => ({
                             title: item.title,
                             brand: item.brand,
                             category: item.category,
@@ -118,7 +126,7 @@ const CheckOut = () => {
 
                         if (paymentResponse.data.success) {
                             setPaymentSuccess(true);
-                            dispatch(clearCart());
+
                             setTimeout(() => {
                                 setPaymentSuccess(false);
                                 navigate("/products");
@@ -173,28 +181,28 @@ const CheckOut = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div className="bg-white shadow-md rounded-md p-6">
                         <h2 className="text-2xl font-bold text-gray-900 mb-6">Order Summary</h2>
-                        {cartItems.length === 0 ? (
+                        {productData.length === 0 ? (
                             <p className="text-gray-500">Your cart is empty.</p>
                         ) : (
                             <div className="space-y-4">
-                                {cartItems.map((item) => (
+                                {productData.map((item) => (
                                     <div
                                         key={item._id}
                                         className="flex items-center border border-gray-300 rounded-md p-4"
                                     >
                                         <img
-                                            src={item.imageUrls?.[0] || "https://via.placeholder.com/100"}
+                                            src={item.imageUrl || "https://via.placeholder.com/100"}
                                             alt={item.title}
                                             className="w-20 h-20 object-cover rounded-md mr-4"
                                         />
                                         <div className="flex-1">
                                             <h3 className="text-lg font-semibold text-gray-800">{item.title}</h3>
                                             <p className="text-sm text-gray-500">{item.brand || "Unknown Brand"}</p>
-                                            <p className="text-sm text-gray-500">Quantity: {item.cartQuantity}</p>
+                                            <p className="text-sm text-gray-500">Quantity: {item.quantity}</p>
                                             <p className="text-orange-500 font-bold">
                                                 ₹
-                                                {(item.discountedPrice || item.originalPrice || 0) *
-                                                    item.cartQuantity}
+                                                {(item.price || item.productId.originalPrice || 0) *
+                                                    item.quantity}
                                             </p>
                                         </div>
                                     </div>
@@ -261,14 +269,14 @@ const CheckOut = () => {
                                 <div className="space-y-4">
                                     <h3 className="font-semibold text-lg text-gray-800">Products:</h3>
                                     <div className="bg-gray-50 p-4 rounded-md shadow-sm">
-                                        {cartItems.map((item) => (
+                                        {productData.map((item) => (
                                             <div
                                                 key={item._id}
                                                 className="flex justify-between items-center text-gray-700"
                                             >
                                                 <span>{item.title}</span>
                                                 <span>
-                                                    ₹{(item.discountedPrice || item.originalPrice || 0) * item.cartQuantity}
+                                                    ₹{(item.prince || item.productId.originalPrice || 0) * item.quantity}
                                                 </span>
                                             </div>
                                         ))}

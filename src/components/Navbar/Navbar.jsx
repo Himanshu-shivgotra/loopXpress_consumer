@@ -1,12 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaShoppingCart, FaUserCircle, FaHome, FaInfoCircle, FaBox, FaClipboardList } from 'react-icons/fa';
-import { useSelector } from 'react-redux';
+import { fetchCartItems } from '../../../redux/slices/cart/cartSlice';
+import { useDispatch } from 'react-redux';
 
 const Navbar = () => {
-    const totalItems = useSelector((state) =>
-        state.cart.items.reduce((total, item) => total + item.cartQuantity, 0)
-    );
+    const dispatch = useDispatch();
+    const [productData, setProductData] = useState([]);
+
+    useEffect(() => {
+        dispatch(fetchCartItems()).then((action) => {
+            setProductData(action.payload);
+        });
+    }, [dispatch]);
+
+    const calculateTotalItems = () =>
+        productData.reduce((total, item) => {
+            return total + (item.quantity !== undefined ? item.quantity : 1);
+        }, 0);
 
     return (
         <nav className="bg-gray-900 p-4 shadow-md">
@@ -66,9 +77,9 @@ const Navbar = () => {
                 <div className="flex space-x-4 items-center">
                     <Link to="/cart" className="relative text-white hover:text-gray-400">
                         <FaShoppingCart />
-                        {totalItems > 0 && (
+                        {calculateTotalItems() > 0 && (
                             <span className="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center transform translate-x-2 -translate-y-2">
-                                {totalItems}
+                                {calculateTotalItems()}
                             </span>
                         )}
                     </Link>

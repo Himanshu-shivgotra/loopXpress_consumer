@@ -26,7 +26,6 @@ const Profile = () => {
                 setIsLoading(false);
             }
         };
-
         fetchProfile();
     }, [navigate]);
 

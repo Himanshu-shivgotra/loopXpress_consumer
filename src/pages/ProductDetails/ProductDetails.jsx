@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axiosInstance from '../../common/axiosInstance';
 import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { addItem } from '../../../redux/slices/cart/cartSlice';
+
 
 const ProductDetails = (product) => {
     const dispatch = useDispatch();

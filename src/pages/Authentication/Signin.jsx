@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axiosInstance from "../../common/axiosInstance";
-import { auth, googleProvider } from "../../firebase";
+import { auth, googleProvider, appleProvider } from "../../firebase";
 import { signInWithPopup } from "firebase/auth";
 
 const SignIn = () => {
@@ -40,7 +40,6 @@ const SignIn = () => {
             if (!token) {
                 throw new Error("No token received from the server.");
             }
-
             localStorage.setItem("authToken", token);
 
             // Redirect to Product List page after successful sign-in
@@ -60,6 +59,34 @@ const SignIn = () => {
     const handleGoogleSignIn = async () => {
         try {
             const result = await signInWithPopup(auth, googleProvider);
+            // const tokenGoogle = await result.user.getIdToken();
+            const user = result.user;
+
+
+            // Send user data and token to the backend server
+            const response = await axiosInstance.post("/api/consumers/google-login", {
+                email: user.email,
+                uid: user.uid,
+                name: user.displayName,
+                phoneNumber: user.phoneNumber,
+            });
+            const { token } = response.data;
+            if (!token) {
+                throw new Error("No token received from the server.");
+            }
+            localStorage.setItem("authToken", token);
+
+            // Redirect to Product List page after successful sign-in
+            navigate("/products");
+        } catch (error) {
+            console.error("Error signing in with Google:", error);
+            setErrorMessage("Something went wrong with Google Sign-In. Please try again.");
+        }
+    };
+
+    const handleAppleSignIn = async () => {
+        try {
+            const result = await signInWithPopup(auth, appleProvider);
             const token = await result.user.getIdToken();
             const user = result.user;
 
@@ -67,7 +94,7 @@ const SignIn = () => {
             localStorage.setItem("authToken", token);
 
             // Send user data and token to the backend server
-            await axiosInstance.post("/api/consumers/google-login", {
+            await axiosInstance.post("/api/consumers/apple-login", {
                 token,
                 email: user.email,
                 name: user.displayName,
@@ -77,8 +104,8 @@ const SignIn = () => {
             // Redirect to Product List page after successful sign-in
             navigate("/products");
         } catch (error) {
-            console.error("Error signing in with Google:", error);
-            setErrorMessage("Something went wrong with Google Sign-In. Please try again.");
+            console.error("Error signing in with Apple:", error);
+            setErrorMessage("Something went wrong with Apple Sign-In. Please try again.");
         }
     };
 
@@ -155,6 +182,16 @@ const SignIn = () => {
                                 className="w-full cursor-pointer rounded-lg border border-gray-900 bg-red-600 p-3 sm:p-4 text-white transition hover:bg-red-500"
                             >
                                 Sign In with Google
+                            </button>
+                        </div>
+
+                        <div className="mb-5">
+                            <button
+                                type="button"
+                                onClick={handleAppleSignIn}
+                                className="w-full cursor-pointer rounded-lg border border-gray-900 bg-black p-3 sm:p-4 text-white transition hover:bg-gray-800"
+                            >
+                                Sign In with Apple
                             </button>
                         </div>
 
